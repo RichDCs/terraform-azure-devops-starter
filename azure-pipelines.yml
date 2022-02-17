@@ -24,7 +24,7 @@ stages:
     environment: 'Dev'
     variables:
       isDestructive: $[ dependencies.CheckDestructiveStage.CheckDestructiveJob.outputs['isDestructiveValue.isDestructive'] ]  
-    condition: eq(variables.isDestructive), 'true')
+    condition: eq(variables.isDestructive, 'true')
     strategy:
      runOnce:
        deploy:
