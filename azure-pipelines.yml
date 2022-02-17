@@ -10,10 +10,21 @@ pool:
   vmImage: ubuntu-latest
 
 stages:
-- stage: Production
+- stage: CheckDestructiveStage
+  jobs:
+  - job: CheckDestructiveJob
+    steps:
+    - bash: |
+        echo "##vso[task.setvariable variable=isDestructive;isoutput=true]true"
+      name: isDestructiveValue
+
+- stage: ValidationStage
   jobs:
   - deployment: DeployDev
     environment: 'Dev'
+    variables:
+      isDestructive: $[ dependencies.CheckDestructiveStage.CheckDestructiveJob.outputs['isDestructiveValue.isDestructive'] ]  
+    condition: eq($(isDestructive), 'true')
     strategy:
      runOnce:
        deploy:
